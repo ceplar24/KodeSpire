@@ -1,10 +1,23 @@
 # KodeSpire
 
 KodeSpire is an Android learning app for beginners exploring Kotlin
-and Jetpack Compose.It combines short explanations with interactive practice.
+and Jetpack Compose. It combines short explanations with interactive practice.
 
 The app is a personal learning project under active development.
 The interface and learning content are currently in Norwegian.
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="screenshots/home.png" alt="Home" width="220"></td>
+    <td align="center"><img src="screenshots/explore.png" alt="Explore" width="220"></td>
+    <td align="center"><img src="screenshots/practice.png" alt="Practice" width="220"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Home</b></td>
+    <td align="center"><b>Explore</b></td>
+    <td align="center"><b>Practice</b></td>
+  </tr>
+</table>
 
 ## Current features
 
@@ -31,7 +44,7 @@ The app currently uses composable functions for each screen.
 - rememberSaveable manages the selected screen, expanded cards and
 selected quiz answers.
 - CourseCard is a reusable component for learning content.
-- animateContentSize animates the expansions and collapse of cards.
+- animateContentSize animates the expansion and collapse of cards.
 
 The current version uses local, hardcoded content and does not require
 an account or a backend.
@@ -39,7 +52,7 @@ an account or a backend.
 ## Run the app
 1. Clone this repository
 2. Open the project folder in Android Studio.
-3. Let Gradle syns and install any SDK components requested.
+3. Let Gradle sync and install any SDK components requested.
 4. Start an Android emulator or connect an Android device.
 5. Run the app module.
 

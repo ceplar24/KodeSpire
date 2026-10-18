@@ -1,6 +1,7 @@
 package com.example.bottomnavigationdemo
 
 import android.os.Bundle
+import android.text.Layout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.bottomnavigationdemo.ui.theme.BottomNavigationDemoTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -45,7 +45,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.ButtonDefaults
-
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.BorderStroke
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +65,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+) {
     var expanded by rememberSaveable {
         mutableStateOf(false)
     }
@@ -75,12 +82,20 @@ fun HomeScreen() {
                     )
                 )
             )
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Column(
+        Image(
+            painter = painterResource(R.drawable.kodespire_hero),
+            contentDescription = "Laptop med kodesymbol og spirer",
             modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -124,10 +139,16 @@ fun HomeScreen() {
 
         Card(
             onClick = { expanded = !expanded},
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(
+                width = 1.dp,
+                color = Color(0xFFD6B5C5)
+            ),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFFFF4F8)
+                containerColor = Color(0xFFFFFAF7)
             )
         ) {
             Column(
@@ -288,7 +309,7 @@ fun LearningScreen() {
             summary = "Plasserer innhold oppå hverandre",
             learning = "Box kan legge elementer oppå hverandre og " +
             "plassere dem innenfor samme område. I KodeSpire " +
-            "bruker vi Box til å sentrere </<-symbolet i sirkelen."
+            "bruker vi Box til å sentrere </> -symbolet i sirkelen."
         )
     }
 }
@@ -298,6 +319,7 @@ fun MainContent(modifier: Modifier = Modifier) {
     var selectedScreen by rememberSaveable {
         mutableStateOf("Hjem")
     }
+    val navController = rememberNavController()
 
     Scaffold(
       modifier = modifier.fillMaxSize(),
@@ -328,15 +350,15 @@ fun MainContent(modifier: Modifier = Modifier) {
                 )
 
                 NavigationBarItem(
-                    selected = selectedScreen == "Læring",
-                    onClick = { selectedScreen = "Læring" },
+                    selected = selectedScreen == "Utforsk",
+                    onClick = { selectedScreen = "Utforsk" },
                     icon = {
                         Icon(
                             imageVector = Icons.Default.School,
-                            contentDescription = "Læring"
+                            contentDescription = "Utforsk"
                         )
                     },
-                    label = { Text("Læring") }
+                    label = { Text("Utforsk") }
                 )
             }
         }
@@ -348,9 +370,21 @@ fun MainContent(modifier: Modifier = Modifier) {
             contentAlignment = Alignment.Center
         ) {
             when (selectedScreen) {
-                "Hjem" -> HomeScreen()
+                "Hjem" -> NavHost(
+                    navController = navController,
+                    startDestination = "home",
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable("home") {
+                        HomeScreen()
+                    }
+
+                    composable("layoutDemo") {
+                        LayoutDemoScreen()
+                    }
+                }
                 "Øving" -> PracticeScreen()
-                "Læring" -> LearningScreen()
+                "Utforsk" -> LearningScreen()
             }
         }
     }
@@ -401,3 +435,63 @@ fun CourseCard(
         }
     }
 }
+
+@Composable
+fun LayoutDemoScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Text(
+            text = "Prøv en layout",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Text(
+            text = "Se hvordan Column plasserer elementer " +
+            "under hverandre.",
+            style = MaterialTheme.typography.bodyLarge
+            )
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFFFF4F8)
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                    .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    listOf(
+                        Color(0xFF74455C),
+                        Color(0xFFE8A5BF),
+                        Color(0xFFF3C5A8)
+                    ).forEachIndexed { index, blockColor ->
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .background(
+                                    color = blockColor,
+                                    shape = RoundedCornerShape(16.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${index + 1}",
+                                color = Color(0xFF2D1724),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
